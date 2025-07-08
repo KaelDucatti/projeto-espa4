@@ -56,7 +56,7 @@ def run_analysis():
     df_analysis_ready = df_merged[df_merged['indicator'] == INDICADOR_UTI].copy()
     
     # Calcular novos casos diários (APÓS a junção e filtragem)
-    # Usamos groupby para calcular a diferença corretamente para cada país
+    # Usei groupby para calcular a diferença corretamente para cada país
     df_analysis_ready.sort_values(['entity', 'date'], inplace=True)
     df_analysis_ready['new_cases'] = df_analysis_ready.groupby('entity')['total_cases'].diff().fillna(0)
     
