@@ -1,4 +1,6 @@
-### Obs.: a proposta de projeto completa se encontra na raiz do repositório, no arquivo [Projeto_2025s1.pdf](Projeto_2025s1.pdf)
+`### Obs.: a proposta de projeto completa se encontra na raiz do repositório, no arquivo [Projeto_2025s1.pdf](Projeto_2025s1.pdf)`
+
+<br>
 
 # Análise de Dados da COVID-19: Casos vs. Internações em UTI
 
