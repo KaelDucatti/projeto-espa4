@@ -4,131 +4,116 @@
 
 Este projeto realiza uma análise exploratória e inferencial sobre dados da pandemia de COVID-19, com foco na relação entre o número de casos confirmados e as internações em Unidades de Terapia Intensiva (UTI).
 
-A análise se concentra principalmente no Brasil, utilizando dados da Argentina como grupo de comparação para testes de hipótese. O objetivo é responder a perguntas-chave sobre a evolução da pandemia, a pressão sobre o sistema de saúde e as diferenças estatísticas entre países.
+Este trabalho foi desenvolvido para atender aos requisitos de uma disciplina de análise de dados, aplicando conceitos teóricos em um estudo de caso prático. A análise se concentra na **França (`France`)**, utilizando dados da **Alemanha (`Germany`)** como grupo de comparação.
 
-As principais análises incluem:
-- Estatística descritiva da série temporal de casos e internações.
-- Análise de correlação entre novos casos diários e ocupação de UTIs.
-- Teste de hipótese para comparar a média de ocupação de UTIs entre Brasil e Argentina.
-- Cálculo de probabilidade empírica de eventos críticos (alta ocupação de UTI).
+## 2. Objetivos e Perguntas de Análise
 
-## 2. Fontes de Dados
+Seguindo a metodologia de "fazer perguntas à base de dados", o projeto busca responder às seguintes questões:
 
-O projeto utiliza dois conjuntos de dados públicos:
+1.  **(Estatística Descritiva)** Como evoluíram o número de novos casos e as internações em UTI na França durante o período observado?
+2.  **(Estatística Descritiva)** Qual a distribuição estatística e a correlação entre o aumento de novos casos diários e o aumento de internações em UTI?
+3.  **(Inferência)** A média de ocupação diária de UTIs na França foi significativamente diferente da média na Alemanha?
+4.  **(Probabilidade)** Qual a probabilidade de a ocupação de UTIs na França ultrapassar um limiar crítico em um dia qualquer?
 
-- `total-cases.csv`: Contém o número total acumulado de casos de COVID-19, reportado diariamente para diversos países e para o mundo.
-- `covid-hospitalizations.csv`: Contém dados diários de hospitalizações, incluindo a ocupação de leitos de UTI (`Daily ICU occupancy`) por país.
+## 3. Fontes de Dados
 
-## 3. Estrutura do Projeto
+O projeto utiliza dois conjuntos de dados públicos do Our World in Data:
 
-O projeto está organizado da seguinte forma:
+- `total_cases.csv`: Contém o número total acumulado de casos de COVID-19.
+- `covid-hospitalizations.csv`: Contém dados diários de hospitalizações.
+
+## 4. Estrutura do Projeto
 
 ```
 /
 |-- data/
-|   |-- covid-hospitalizations.csv
-|   |-- total-cases.csv
-|
 |-- scripts/
 |   |-- analise_covid.py
 |
-|-- README.md
-|-- requirements.txt
+|-- resultados/
+|   |-- series_temporais.png
+|   |-- histograma_uti.png
+|   |-- correlacao.png
 |
-|-- (Saídas Geradas)/
-|   |-- series_temporais_brasil.png
-|   |-- histograma_uti_brasil.png
-|   |-- correlacao_brasil.png
+|-- main.py
+|-- README.md
+|-- ... (outros arquivos de ambiente)
 ```
 
-## 4. Pré-requisitos
+## 5. Pré-requisitos e Instalação
 
-Para executar este projeto, você precisará ter o **Python 3.7+** instalado. As seguintes bibliotecas são necessárias:
+Para executar este projeto, você precisará do **Python 3.7+** e das bibliotecas `pandas`, `matplotlib`, `seaborn`, `scipy`.
 
-- `pandas`
-- `matplotlib`
-- `seaborn`
-- `scipy`
-
-## 5. Instalação
-
-1.  **Clone ou baixe este repositório:**
+1.  **Crie e ative um ambiente virtual.**
+2.  **Instale as dependências:**
     ```bash
-    git clone <url-do-seu-repositorio>
-    cd <nome-do-repositorio>
-    ```
-
-2.  **Crie um ambiente virtual (recomendado):**
-    ```bash
-    python -m venv venv
-    ```
-
-3.  **Ative o ambiente virtual:**
-    - No Windows:
-      ```bash
-      .\venv\Scripts\activate
-      ```
-    - No macOS/Linux:
-      ```bash
-      source venv/bin/activate
-      ```
-
-4.  **Instale as dependências a partir do arquivo `requirements.txt`:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-    *Conteúdo do arquivo `requirements.txt`:*
-    ```
-    pandas
-    matplotlib
-    seaborn
-    scipy
+    pip install pandas matplotlib seaborn scipy
     ```
 
 ## 6. Como Executar a Análise
 
-Com o ambiente configurado e as dependências instaladas, execute o script de análise a partir da pasta raiz do projeto:
+Com o ambiente configurado, execute o script a partir da pasta raiz do projeto:
 
 ```bash
-python scripts/analise_covid.py
+python main.py
 ```
 
-O script irá imprimir os resultados das análises no console e salvar os gráficos gerados na pasta raiz do projeto.
+O script irá imprimir os resultados numéricos no console e salvar os gráficos gerados na pasta `resultados/`. A interpretação detalhada desses resultados está descrita abaixo.
 
-## 7. Detalhes da Análise
+## 7. Detalhes da Análise e Cálculos Realizados
 
-O script `analise_covid.py` realiza as seguintes etapas:
+O script `scripts/analise_covid.py` realiza as seguintes análises, conforme os conteúdos da disciplina:
 
-### 7.1. Estatística Descritiva
-- **Carregamento e Limpeza:** Os dados são carregados, as datas são convertidas e os datasets são filtrados para focar no Brasil e na Argentina.
-- **Cálculo de Novos Casos:** O número de novos casos diários para o Brasil é calculado a partir da diferença do total de casos acumulados.
-- **Medidas de Tendência Central e Dispersão:** São calculadas a média, mediana, desvio padrão, mínimo e máximo para as variáveis "Novos Casos Diários" e "Ocupação de UTI".
-- **Visualização:**
-    - Um **gráfico de séries temporais** é gerado para visualizar a evolução de novos casos e da ocupação de UTI no Brasil.
-    - Um **histograma** mostra a distribuição de frequência da ocupação diária de UTI.
+### a. Estatística Descritiva
+- **Preparação dos Dados:** Os dados são carregados e o arquivo de casos é transformado do formato "largo" para "longo" (`pandas.melt`) para permitir uma junção robusta com os dados de hospitalizações.
+- **Cálculo de Novos Casos:** O número de novos casos diários é calculado usando `groupby('entity').diff()`.
+- **Análise de Correlação:** A **Correlação de Pearson** é calculada para medir a força da relação linear entre novos casos e ocupação de UTI.
 
-### 7.2. Análise de Correlação
-- **Cálculo:** A **correlação de Pearson** é calculada entre as variáveis "Novos Casos Diários" e "Ocupação de UTI" para quantificar a força da relação linear entre elas.
-- **Visualização:** Um **gráfico de dispersão (scatterplot)** é gerado para visualizar essa relação.
+### b. Inferência (Teste de Hipótese)
+- **Método:** É utilizado o **Teste t de Welch** para comparar as médias de ocupação de UTI entre a França e a Alemanha.
+- **Conclusão:** O **p-valor** é comparado com um nível de significância de 5% para determinar se a diferença entre as médias é estatisticamente significativa.
 
-### 7.3. Teste de Hipótese (Inferência)
-- **Objetivo:** Comparar se a média de ocupação diária de UTI no Brasil é estatisticamente diferente da média na Argentina.
-- **Hipóteses:**
-    - **H₀ (Nula):** As médias de ocupação de UTI são iguais.
-    - **H₁ (Alternativa):** As médias de ocupação de UTI são diferentes.
-- **Método:** É utilizado o **Teste t de Welch** (para amostras independentes com variâncias desiguais).
-- **Conclusão:** Com base no **p-valor** e em um nível de significância de 5% ($$\alpha = 0.05$$), o script determina se a hipótese nula deve ser rejeitada.
+### c. Probabilidade
+- **Método:** A probabilidade empírica de a ocupação de UTI ultrapassar o **75º percentil** é calculada para quantificar a frequência de períodos de alta pressão hospitalar.
 
-### 7.4. Análise de Probabilidade
-- **Objetivo:** Calcular a probabilidade empírica de a ocupação de UTI no Brasil ultrapassar um limiar crítico.
-- **Método:**
-    1. O **75º percentil** da ocupação de UTI é calculado para definir um limiar de "alta ocupação".
-    2. A probabilidade é calculada como a razão entre o número de dias em que a ocupação esteve acima desse limiar e o número total de dias com dados disponíveis.
+## 8. Resultados e Interpretação
 
-## 8. Saídas Geradas (Outputs)
+A execução do script gerou os seguintes resultados, que são interpretados abaixo.
 
-Ao executar o script, os seguintes arquivos de imagem são salvos na pasta raiz do projeto:
+### a. Estatística Descritiva (Análise da França)
 
-1.  `series_temporais_brasil.png`: Gráfico de linha mostrando a evolução de novos casos e ocupação de UTI.
-2.  `histograma_uti_brasil.png`: Histograma da distribuição da ocupação de UTI no Brasil.
-3.  `correlacao_brasil.png`: Gráfico de dispersão mostrando a correlação entre novos casos e ocupação de UTI.
+- **Resultados Numéricos:**
+  - `count`: 1.109 dias de dados
+  - `mean new_cases`: ~35.000
+  - `std new_cases`: ~171.500
+  - `mean icu_occupancy`: ~2.047
+  - `min/max icu_occupancy`: 344 / 7.019
+
+- **Interpretação:**
+  A análise descritiva para a França, baseada em 1.109 dias de dados, revela a natureza volátil da pandemia. A média de novos casos diários foi de aproximadamente 35.000, mas com um desvio padrão extremamente elevado, indicando a ocorrência de ondas pandêmicas com picos de infecção muito acima da média. O sistema de saúde enfrentou uma pressão similarmente variável, com a ocupação de UTIs por pacientes de COVID-19 variando de um mínimo de 344 para um pico alarmante de mais de 7.000, com uma média diária de 2.047 leitos ocupados. Esses números demonstram os desafios significativos enfrentados pelo sistema hospitalar francês.
+
+### b. Análise de Correlação (França)
+
+- **Resultado Numérico:**
+  - `Correlação de Pearson`: 0.0587
+
+- **Interpretação:**
+  A análise de correlação de Pearson entre o número de *novos casos diários* e a *ocupação diária de UTI* no mesmo dia resultou em um coeficiente de 0.0587. Este valor, muito próximo de zero, indica que **não há uma correlação linear forte e imediata** entre as duas variáveis. Este resultado, embora contraintuitivo, é esperado e pode ser explicado por fatores como o **lag temporal** (atraso entre o diagnóstico e a necessidade de UTI), o **impacto da vacinação** e a **menor severidade de novas variantes**, que fizeram com que um grande número de casos não se traduzisse em um aumento proporcional de internações graves.
+
+### c. Inferência (Teste de Hipótese: França vs. Alemanha)
+
+- **Resultados Numéricos:**
+  - `Média de ocupação de UTI (França)`: 2046.52
+  - `Média de ocupação de UTI (Alemanha)`: 1771.24
+  - `P-valor`: 0.0000
+
+- **Interpretação:**
+  Para comparar a carga sobre os sistemas de saúde, foi realizado um teste t entre a média de ocupação diária de UTI na França (2046.52) e na Alemanha (1771.24). O resultado produziu um **p-valor extremamente baixo (p < 0.0001)**. Como este valor é significativamente menor que o nosso nível de significância (α = 0.05), **rejeitamos a hipótese nula**. Isso nos permite concluir, com alta confiança estatística, que a diferença observada entre as médias não é fruto do acaso. Durante o período analisado, a França teve, em média, uma carga de ocupação de UTIs por COVID-19 **estatisticamente maior** do que a Alemanha.
+
+### d. Probabilidade (Análise da França)
+
+- **Resultado Numérico:**
+  - `Probabilidade de a ocupação de UTI exceder 2933.00`: 24.98%
+
+- **Interpretação:**
+  A análise de probabilidade empírica foi usada para quantificar a frequência de períodos de alta pressão sobre o sistema de saúde. Definimos um limiar crítico como o 75º percentil da ocupação de UTI (2.933 leitos). O cálculo revelou que a probabilidade de a ocupação de UTI exceder este valor em um dia qualquer foi de **24.98%**. Em termos práticos, isso significa que durante aproximadamente **um em cada quatro dias** do período analisado, o sistema de saúde francês esteve sob uma carga considerada 'alta', com quase 3.000 ou mais pacientes de COVID-19 em tratamento intensivo.
